@@ -1,0 +1,6 @@
+,id,date,striker_name,season,striker.id,striker.name,striker.member.id,striker.member.name,striker.member.surename,striker.member.date_of_birth,striker.member.is_active,striker.member.type,striker.member.seasons,striker.member
+0,1,2022-06-20,marvin,,3,marvin,3.0,Marvin,Behr,,False,1.0,[],
+1,2,2022-06-20,alpi,,4,alpi,2.0,Phillip,Alpen,,False,1.0,[],
+2,3,2022-06-20,janis,,1,janis,1.0,Janis,Voß,2022-06-15,False,2.0,[],
+3,4,2022-06-20,marin,,6,marin,,,,,,,,
+4,5,2022-06-20,janis,,1,janis,1.0,Janis,Voß,2022-06-15,False,2.0,[],
