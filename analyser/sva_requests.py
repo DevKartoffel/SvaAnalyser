@@ -1,5 +1,8 @@
+from lib2to3.pgen2 import token
+from msilib.schema import Error
 from typing import Any
 import requests
+import os
 
 class SvaRequests():
 
@@ -14,23 +17,31 @@ class SvaRequests():
             'username': self.email,
             'password': self.password
         }
-        resp = requests.post(url=self.base_url + endpoint, data=data )
 
-        if resp.status_code == 200:
-            self.token = resp.json().get('token')
+        try:
+            resp = requests.post(url=self.base_url + endpoint, data=data, timeout=10)
+
+            if resp.status_code == 200:
+                self.token = resp.json().get('token')
+                os.putenv("TOKEN", self.token)
+                
+                return resp.json
+            
             return resp.json
+        except ConnectionError as err:
+            print(err)
+
         
-        return resp.json
     
 
-    def get_fylovers(self, filter:str) -> Any:
+    def get_fylovers(self, filter:str) -> requests.Response:
         endpoint = 'sva/apis/flyovers/'
         header = {
             'Authorization': 'Token ' + self.token
         }
         resp = requests.get(url=self.base_url + endpoint, headers=header)
 
-        return resp.json()
+        return resp
 
     def get_nutmegs(self, filter:str) -> Any:
         endpoint = 'sva/apis/nutmegs/'

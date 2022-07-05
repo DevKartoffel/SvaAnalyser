@@ -16,20 +16,33 @@ class Analyser():
         
     def run(self):
         self.analyse_flyover()
-        self.analyse_netmeg()
+        # self.analyse_netmeg()
         pass
     
     def analyse_flyover(self):
-        data = self.sva_requ.get_fylovers('')
-        df = pd.json_normalize(data)
-        df.to_csv('./flyover.csv')
-        return True
+        # resp = self.sva_requ.get_fylovers('')
+
+        # if resp.status_code == 200:
+
+        #     df = pd.json_normalize(resp.json())
+
+        #     print('stop')
+
+        #     df.to_csv('./csv/flyover.csv')
+        #     return True
+        df = pd.read_csv('./csv/flyover_test.csv')
+
+        print('stop')
+
+        print(df.all())
+
+        return False
         
     
     def analyse_netmeg(self):
         data = self.sva_requ.get_nutmegs('')
         df = pd.json_normalize(data)
-        df.to_csv('./nutmegs.csv')
+        df.to_csv('./csv/nutmegs.csv')
         return True
 
 

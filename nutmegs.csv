@@ -1,3 +1,0 @@
-,id,date,striker_name,victom_name,season,striker.id,striker.name,striker.member.id,striker.member.name,striker.member.surename,striker.member.date_of_birth,striker.member.is_active,striker.member.type,striker.member.seasons,victom.id,victom.name,victom.member.id,victom.member.name,victom.member.surename,victom.member.date_of_birth,victom.member.is_active,victom.member.type,victom.member.seasons,victom.member
-0,1,2022-06-20,janis,mogli,,1,janis,1,Janis,Voß,2022-06-15,False,2,[],2,mogli,1.0,Janis,Voß,2022-06-15,False,2.0,[],
-1,2,2022-06-20,janis,alpen,,1,janis,1,Janis,Voß,2022-06-15,False,2,[],5,alpen,,,,,,,,
