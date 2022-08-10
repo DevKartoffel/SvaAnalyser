@@ -12,27 +12,26 @@ class SvaRequests():
         self.base_url = base_url
 
     def get_token(self) -> Any:
-        endpoint = 'accounts/apis/login/'
+        print('Get Token')
+        url = self.base_url + 'accounts/apis/login/'
         data = {
             'username': self.email,
             'password': self.password
         }
 
         try:
-            resp = requests.post(url=self.base_url + endpoint, data=data, timeout=10)
+            resp = requests.post(url=url, data=data, timeout=10)
 
             if resp.status_code == 200:
                 self.token = resp.json().get('token')
                 os.putenv("TOKEN", self.token)
                 
-                return resp.json
+                return resp
             
-            return resp.json
-        except ConnectionError as err:
-            print(err)
-
-        
-    
+            return resp
+        except (ConnectionError, Exception) as err:
+            print(err.args)
+            
 
     def get_fylovers(self, filter:str) -> requests.Response:
         endpoint = 'sva/apis/flyovers/'
@@ -43,11 +42,11 @@ class SvaRequests():
 
         return resp
 
-    def get_nutmegs(self, filter:str) -> Any:
+    def get_nutmegs(self, filter:str) -> requests.Response:
         endpoint = 'sva/apis/nutmegs/'
         header = {
             'Authorization': 'Token ' + self.token
         }
         resp = requests.get(url=self.base_url + endpoint, headers=header)
 
-        return resp.json()
+        return resp
