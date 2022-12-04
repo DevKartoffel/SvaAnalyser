@@ -10,6 +10,7 @@ class SvaRequests():
         self.email = email
         self.password = password
         self.base_url = base_url
+        self.token = None
 
     def get_token(self) -> Any:
         print('Get Token')
@@ -50,3 +51,6 @@ class SvaRequests():
         resp = requests.get(url=self.base_url + endpoint, headers=header)
 
         return resp
+
+    def get_team(self):
+        endpoint = 'sva/apis/players/'

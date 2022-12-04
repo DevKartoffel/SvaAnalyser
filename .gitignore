@@ -1,6 +1,9 @@
 #Vs Code
 *.vscode
+.vscode/
 /csv
+TEST*
+local*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
