@@ -4,14 +4,17 @@ import pandas as pd
 import os
 import json
 from dotenv import load_dotenv
+import locale
 
 
 
 
 class Analyser():
     excel_delimiter = ';'
+    
 
     def __init__(self) -> None:
+        locale.setlocale(locale.LC_ALL, 'de_DE.UTF8')
 
         # Initialize test
         self.test = False
@@ -96,6 +99,8 @@ class Analyser():
             )
         df['striker.full_name'] = df['striker.member.name'] + ' ' + df['striker.member.surename']
         df['victom.full_name'] = df['victom.member.name'] + ' ' + df['victom.member.surename']
+        df['date'] = pd.to_datetime(df['date'])
+        df['weekday'] = df['date'].dt.day_name(locale='de_DE.utf-8')
         
         # Write data to csv
         df.to_csv('./csv/tunnler_all.csv')
@@ -104,11 +109,17 @@ class Analyser():
         striker = df.groupby(['striker.full_name'], as_index=False)['striker.full_name'].value_counts().sort_values('count', ascending=False)
         victoms = df.groupby(['victom.full_name'], as_index=False)['victom.full_name'].value_counts().sort_values('count', ascending=False)
         crosstab = pd.crosstab(index=df['striker.full_name'],columns=df['victom.full_name'], margins=True, margins_name='Summe') # cross tabele
+        striker_weekday = pd.crosstab(index=df['striker.full_name'],columns=df['weekday'], margins=True, margins_name='Summe')
+        victom_weekday = pd.crosstab(index=df['victom.full_name'],columns=df['weekday'], margins=True, margins_name='Summe')
+
+        # print(striker_weekday.head(15))
 
         # write final csvs
         striker.to_csv('./csv/simple_tunnelkoenig.csv', index=False, header=['Name', 'Tunnler'], sep=self.excel_delimiter)
         victoms.to_csv('./csv/simple_elbtunnel.csv', index=False, header=['Name', 'Tunnler'], sep=self.excel_delimiter)
         crosstab.to_csv('./csv/tunnler_kreuztabelle.csv',index_label="Verteiler", sep=self.excel_delimiter)
+        striker_weekday.to_csv('./csv/simple_tunnelkoenig_wochentag_verteiler.csv', index_label="Verteiler", sep=self.excel_delimiter)
+        victom_weekday.to_csv('./csv/simple_tunnelkoenig_wochetntag_opfer.csv', index_label="Opfer", sep=self.excel_delimiter)
 
         
 
