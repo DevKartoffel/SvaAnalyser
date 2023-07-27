@@ -53,4 +53,19 @@ class SvaRequests():
         return resp
 
     def get_team(self):
-        endpoint = 'sva/apis/players/'
+        endpoint = 'sva/apis/members/'
+        header = {
+            'Authorization': 'Token ' + self.token
+        }
+        resp = requests.get(url=self.base_url + endpoint, headers=header)
+
+        return resp
+
+    def get_seasions(self):
+        endpoint = 'sva/apis/seasons/'
+        header = {
+            'Authorization': 'Token ' + self.token
+        }
+        resp = requests.get(url=self.base_url + endpoint, headers=header)
+
+        return resp
