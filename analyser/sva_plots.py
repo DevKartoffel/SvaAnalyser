@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import os
 
 class SvaPlots():
 
@@ -39,7 +40,9 @@ class SvaPlots():
         """ Returns dataFrame that can be plotted by time
         """
 
-        df = df.sort_values('date').reset_index() 
+        df = df.sort_values('date').reset_index()
+        # print(df[['date', fullNameCol]].head(10))
+        
         for player in playerNames:
             print('Analyse ' + player)
             timeSeries = self.get_player_time_series(df, player, fullNameCol)
@@ -56,6 +59,8 @@ class SvaPlots():
         for player in playerNames:
             values = dateGroups[colAttachment + player].max()
             plottData[player] = values.values
+
+        # print(plottData.head(10))
 
         return plottData
     
@@ -76,14 +81,20 @@ class SvaPlots():
         plt.show()
     
     @staticmethod
-    def subplot(plots:[]):
+    def subplot(plots:[], fileName=None):
+
+        # set number of graph and figure size
         nrow = len(plots)
-        fig, axes = plt.subplots(nrow, 1)
+        cm = 1/2.54
+        fig, axes = plt.subplots(nrow, 1, figsize=(12*cm, 50*cm))
+
+        
 
         counter = 0
         for plotData in plots:
-            startTime = plotData.data['date'][0]
-            endTime = plotData.data['date'][len(plotData.data)-1]
+            # print(plotData.data.head(10))
+            startTime = plotData.data['date'].min()
+            endTime = plotData.data['date'].max()
             ax = plotData.data.plot(
                 ax=axes[counter],
                 x='date',
@@ -92,10 +103,20 @@ class SvaPlots():
                 grid = True,
                 ylim= (0),
                 xlim= (startTime, endTime),
+                lw=4,
                 **plotData.info
             )
             ax.legend(loc='upper left')
 
             counter +=1
+        
+        if fileName != None:
+            plotDir = 'plots\\'
 
+            if not os.path.exists(plotDir):
+                os.mkdir(plotDir)
+            
+            fig.savefig(plotDir + fileName + '.svg', format='svg', transparent=True)
+            fig.savefig(plotDir + fileName + '.png', format='png', transparent=True)
+        return fig, axes
 
