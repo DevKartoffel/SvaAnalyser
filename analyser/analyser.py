@@ -55,36 +55,30 @@ class Analyser():
         if resp.status_code == 200:
             seasons = resp.json()
             self.current_season = seasons[-1]
-            # today = date.today()
 
-            # for season in seasons:
-            #     if date(season['start']) > today and date(season['end']) < today:
-            #         self.current_season = season
+        # print(str(self.current_season))
 
-        print(str(self.current_season))
+    def test(self):
+        # self.save_json_data()
+        nutmegs = get_saved_data(self.local_nutmeg_data_dir)
+        flyovers = get_saved_data(self.local_flyover_data_dir)
+        seasion = {'id':3}
+        self.flyovers = Flyover(flyovers, self.excel_delimiter)
+        self.flyovers.analyse(seasion)
 
-        
+        self.nutmegs = Nutmeg(nutmegs, self.excel_delimiter)
+        self.nutmegs.analyse(seasion)
+
+        plots = self.nutmegs.get_plots() + self.flyovers.get_plots()
+        self.nutmegs.subplot(plots, 'graphs')
+        # self.nutmegs.test()
+
+
     def run(self):
 
         # Alayse by local data 
         if self.test:
-            # self.save_json_data()
-            nutmegs = get_saved_data(self.local_nutmeg_data_dir)
-            flyovers = get_saved_data(self.local_flyover_data_dir)
-            seasion = {'id':3}
-            self.flyovers = Flyover(flyovers, self.excel_delimiter)
-            self.flyovers.analyse(seasion)
-
-            self.nutmegs = Nutmeg(nutmegs, self.excel_delimiter)
-            self.nutmegs.analyse(seasion)
-
-            plots = self.nutmegs.get_plots() + self.flyovers.get_plots()
-            self.nutmegs.subplot(plots)
-
-            self.nutmegs.show_plots()
-            
-
-            # self.nutmegs.test()
+            self.test()
         
         # Alayse by requested data 
         elif self.sva_requ.token:
@@ -111,6 +105,8 @@ class Analyser():
                     self.nutmegs.analyse(self.current_season, team)
                     # self.analyse_nutmeg(nutmegs, team)
                 
+                plots = self.nutmegs.get_plots() + self.flyovers.get_plots()
+                self.nutmegs.subplot(plots, 'graphs')
             else:
                 print('Analys flyover')
                 resp = self.sva_requ.get_fylovers('')
@@ -129,6 +125,7 @@ class Analyser():
                     # self.analyse_nutmeg(nutmegs, team)
         else:
             print('Token is missing')
+    
 
     def save_json_data(self):
         if self.sva_requ.token == None:
