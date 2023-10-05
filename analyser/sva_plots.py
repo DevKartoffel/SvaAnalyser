@@ -44,7 +44,6 @@ class SvaPlots():
         # print(df[['date', fullNameCol]].head(10))
         
         for player in playerNames:
-            print('Analyse ' + player)
             timeSeries = self.get_player_time_series(df, player, fullNameCol)
             # print(timeSeries)
             df[colAttachment + player] = timeSeries
@@ -84,11 +83,13 @@ class SvaPlots():
     def subplot(plots:[], fileName=None):
 
         # set number of graph and figure size
-        nrow = len(plots)
+        nPLots = len(plots)
         cm = 1/2.54
-        fig, axes = plt.subplots(nrow, 1, figsize=(12*cm, 50*cm))
-
-        
+        ratio = 45/120
+        width = 14
+        # fig, axes = plt.subplots(nrow, 1, figsize=(12*cm, 4.5*cm))
+        fig, axes = plt.subplots(nPLots, 1, figsize=(width, width * ratio))
+        # fig, axes = plt.subplots(1, nPLots, figsize=(12*cm, 4.5*cm))
 
         counter = 0
         for plotData in plots:
@@ -103,10 +104,13 @@ class SvaPlots():
                 grid = True,
                 ylim= (0),
                 xlim= (startTime, endTime),
-                lw=4,
+                legend=False,
+                lw=2,
                 **plotData.info
             )
-            ax.legend(loc='upper left')
+            # ax.legend(loc='upper left',fontsize=8)
+            ax.set_title(plotData.info['title'], pad=2, fontdict={'fontsize':12})
+            ax.set_ylabel(plotData.info['ylabel'], fontdict={'fontsize':8})
 
             counter +=1
         
