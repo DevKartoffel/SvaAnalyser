@@ -4,8 +4,8 @@ from datetime import date
 
 class Flyover(SvaBasics):
 
-    def __init__(self, data, excel_delimiter) -> None:
-        super().__init__(data, excel_delimiter)
+    def __init__(self, data, excelPath) -> None:
+        super().__init__(data, excelPath)
         self.df = self.prepare_data(data)
         
     
@@ -30,7 +30,7 @@ class Flyover(SvaBasics):
         # Analys by groups
         grp = df.groupby(['striker.full_name'], as_index=False)
         simple_data = grp['striker.full_name'].value_counts().sort_values(['count', 'striker.full_name'], ascending=[False, True])
-        simple_data.head(self.TABLE_SIZE).to_csv('./csv/zaunkoenig.csv', index=False, header=['Name', 'Zaunschüsse'], sep=self.excel_delimiter)
+        #simple_data.head(self.TABLE_SIZE).to_csv('./csv/zaunkoenig.csv', index=False, header=['Name', 'Zaunschüsse'], sep=self.excel_delimiter)
 
         
         # For plotting tale
@@ -40,6 +40,9 @@ class Flyover(SvaBasics):
         )
         info = {}
         self.subplotTables.append(self.PlotData(simple_data.head(self.TABLE_SIZE), info))
+
+        # print to excel
+        self.toExcelSheet(simple_data.head(self.TABLE_SIZE), 'Zaunkönig')
 
         # Get first players to analyse
         topStrikers = simple_data['Name'].head(self.NUM_PLAYERS_GRAPH)

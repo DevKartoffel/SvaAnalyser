@@ -24,6 +24,8 @@ class Analyser():
         with open('./settings.json', 'r') as f:
             data = json.load(f)
             base_url = data['base_url']
+            self.excel_path = data['excel_path']
+
         
         # Overw
         if os.path.exists('./local_settings.json'):
@@ -34,6 +36,8 @@ class Analyser():
                     self.test = True
                     self.local_nutmeg_data_dir = data['local_nutmeg_data']
                     self.local_flyover_data_dir = data['local_flyover_data']
+                if 'excel_path' in data:
+                    self.excel_path = data['excel_path']
         
 
         load_dotenv()
@@ -63,10 +67,10 @@ class Analyser():
         nutmegs = get_saved_data(self.local_nutmeg_data_dir)
         flyovers = get_saved_data(self.local_flyover_data_dir)
         seasion = {'id':3}
-        self.flyovers = Flyover(flyovers, self.excel_delimiter)
+        self.flyovers = Flyover(flyovers, self.excel_path)
         self.flyovers.analyse(seasion)
 
-        self.nutmegs = Nutmeg(nutmegs, self.excel_delimiter)
+        self.nutmegs = Nutmeg(nutmegs, self.excel_path)
         self.nutmegs.analyse(seasion)
 
         plots = self.nutmegs.get_plots() + self.flyovers.get_plots()
@@ -93,7 +97,7 @@ class Analyser():
                 resp = self.sva_requ.get_fylovers('')
                 flyovers = resp.json()
                 if resp.status_code == 200:
-                    self.flyovers = Flyover(flyovers, self.excel_delimiter)
+                    self.flyovers = Flyover(flyovers, self.excel_path)
                     self.flyovers.analyse(self.current_season, team)
                     # self.analyse_flyover(flyovers, team)
 
@@ -101,7 +105,7 @@ class Analyser():
                 resp = self.sva_requ.get_nutmegs('')
                 if resp.status_code == 200:
                     nutmegs = resp.json()
-                    self.nutmegs = Nutmeg(nutmegs, self.excel_delimiter)
+                    self.nutmegs = Nutmeg(nutmegs, self.excel_path)
                     self.nutmegs.analyse(self.current_season, team)
                     # self.analyse_nutmeg(nutmegs, team)
                 
@@ -113,7 +117,7 @@ class Analyser():
                 resp = self.sva_requ.get_fylovers('')
                 flyovers = resp.json()
                 if resp.status_code == 200:
-                    self.flyovers = Flyover(flyovers)
+                    self.flyovers = Flyover(flyovers, self.excel_path)
                     self.flyovers.analyse(self.current_season)
                     # self.analyse_flyover(flyovers, team)
 
@@ -121,7 +125,7 @@ class Analyser():
                 resp = self.sva_requ.get_nutmegs('')
                 if resp.status_code == 200:
                     nutmegs = resp.json()
-                    self.nutmegs = Nutmeg(nutmegs)
+                    self.nutmegs = Nutmeg(nutmegs, self.excel_path)
                     self.nutmegs.analyse(self.current_season)
                     # self.analyse_nutmeg(nutmegs, team)
         else:
