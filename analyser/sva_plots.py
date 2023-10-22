@@ -11,6 +11,7 @@ class SvaPlots():
 
     def __init__(self) -> None:
         self.plots = []
+        self.subplotTables = []
 
     def get_plots(self):
         return self.plots
@@ -86,9 +87,10 @@ class SvaPlots():
         nPLots = len(plots)
         cm = 1/2.54
         ratio = 45/120
-        width = 14
-        # fig, axes = plt.subplots(nrow, 1, figsize=(12*cm, 4.5*cm))
-        fig, axes = plt.subplots(nPLots, 1, figsize=(width, width * ratio))
+        width = 10
+        fig, axes = plt.subplots(nPLots, 1, figsize=(20*cm, 20*cm))
+        #fig, axes = plt.subplots(nPLots, 1)
+        #fig, axes = plt.subplots(nPLots, 1, figsize=(width, width * ratio))
         # fig, axes = plt.subplots(1, nPLots, figsize=(12*cm, 4.5*cm))
 
         counter = 0
@@ -104,13 +106,16 @@ class SvaPlots():
                 grid = True,
                 ylim= (0),
                 xlim= (startTime, endTime),
-                legend=False,
+                legend=True,
                 lw=2,
                 **plotData.info
             )
+            # plt.subplots_adjust(right=0.5)
             # ax.legend(loc='upper left',fontsize=8)
+            plt.tight_layout(h_pad=0, w_pad=2)
             ax.set_title(plotData.info['title'], pad=2, fontdict={'fontsize':12})
             ax.set_ylabel(plotData.info['ylabel'], fontdict={'fontsize':8})
+            ax.legend(bbox_to_anchor=(1.05, 1.05), fontsize= 12)
 
             counter +=1
         
@@ -122,5 +127,7 @@ class SvaPlots():
             
             fig.savefig(plotDir + fileName + '.svg', format='svg', transparent=True)
             fig.savefig(plotDir + fileName + '.png', format='png', transparent=True)
+        
+        # plt.show()
         return fig, axes
 
