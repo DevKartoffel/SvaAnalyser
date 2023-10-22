@@ -58,7 +58,7 @@ class Analyser():
 
         # print(str(self.current_season))
 
-    def test(self):
+    def run_test(self):
         # self.save_json_data()
         nutmegs = get_saved_data(self.local_nutmeg_data_dir)
         flyovers = get_saved_data(self.local_flyover_data_dir)
@@ -78,7 +78,7 @@ class Analyser():
 
         # Alayse by local data 
         if self.test:
-            self.test()
+            self.run_test()
         
         # Alayse by requested data 
         elif self.sva_requ.token:
@@ -105,6 +105,7 @@ class Analyser():
                     self.nutmegs.analyse(self.current_season, team)
                     # self.analyse_nutmeg(nutmegs, team)
                 
+                # Print graphs
                 plots = self.nutmegs.get_plots() + self.flyovers.get_plots()
                 self.nutmegs.subplot(plots, 'graphs')
             else:
