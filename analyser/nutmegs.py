@@ -70,19 +70,36 @@ class Nutmeg(SvaBasics):
             missing_victoms = dfTeam[~dfTeam['victom.full_name'].isin(victoms['victom.full_name'])]
 
             # Add missing players to data
-            striker = pd.concat([striker, missing_strikers], ignore_index=True).drop(columns=['victom.full_name'])
-            victoms = pd.concat([victoms, missing_victoms], ignore_index=True).drop(columns=['striker.full_name'])
+            striker = pd.concat([striker, missing_strikers], ignore_index=True).drop(columns=['victom.full_name']).sort_values(['count', 'striker.full_name'], ascending=[False, True])
+            victoms = pd.concat([victoms, missing_victoms], ignore_index=True).drop(columns=['striker.full_name']).sort_values(['count', 'victom.full_name'], ascending=[False, True])
+
+        # Rename cols
+        striker.rename(
+            columns={"count": "Tunnler", "striker.full_name": "Name"},
+            inplace=True,
+        )
+        victoms.rename(
+            columns={"count": "Tunnler", "victom.full_name": "Name"},
+            inplace=True,
+        )
 
         # write final csvs
-        striker.to_csv('./csv/simple_tunnelkoenig.csv', index=False, header=['Name', 'Tunnler'], sep=self.excel_delimiter)
-        victoms.to_csv('./csv/simple_elbtunnel.csv', index=False, header=['Name', 'Tunnler'], sep=self.excel_delimiter)
+        striker.head(self.TABLE_SIZE).to_csv('./csv/tunnelkoenig.csv', index=False, sep=self.excel_delimiter)
+        victoms.head(self.TABLE_SIZE).to_csv('./csv/elbtunnel.csv', index=False, sep=self.excel_delimiter)
         crosstab.to_csv('./csv/tunnler_kreuztabelle.csv',index_label="Verteiler", sep=self.excel_delimiter)
-        striker_weekday.to_csv('./csv/simple_tunnelkoenig_wochentag_verteiler.csv', index_label="Verteiler", sep=self.excel_delimiter)
-        victom_weekday.to_csv('./csv/simple_tunnelkoenig_wochetntag_opfer.csv', index_label="Opfer", sep=self.excel_delimiter)
+        striker_weekday.to_csv('./csv/tunnelkoenig_wochentag_verteiler.csv', index_label="Verteiler", sep=self.excel_delimiter)
+        victom_weekday.to_csv('./csv/tunnelkoenig_wochetntag_opfer.csv', index_label="Opfer", sep=self.excel_delimiter)
+
+        
+        
+
+        info = {}
+        self.subplotTables.append(self.PlotData(striker.head(self.TABLE_SIZE), info))
+        self.subplotTables.append(self.PlotData(victoms.head(self.TABLE_SIZE), info))
 
         # Get first players to analyse
-        topStrikers = striker['striker.full_name'].head(numGraphs)
-        topVictoms = victoms['victom.full_name'].head(numGraphs)
+        topStrikers = striker['Name'].head(self.NUM_PLAYERS_GRAPH)
+        topVictoms = victoms['Name'].head(self.NUM_PLAYERS_GRAPH)
 
         # Analyse Nutmeg Kings
         info = {

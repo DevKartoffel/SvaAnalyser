@@ -2,6 +2,8 @@ from .sva_plots import SvaPlots
 import pandas as pd
 
 class SvaBasics(SvaPlots):
+    TABLE_SIZE = 15
+    NUM_PLAYERS_GRAPH = 5
 
 
     def __init__(self, data, excel_delimiter) -> None:
