@@ -10,8 +10,8 @@ from .sva_basic import SvaBasics
 class Nutmeg(SvaBasics):
     
 
-    def __init__(self, data, excel_delimiter) -> None:
-        super().__init__( data, excel_delimiter)
+    def __init__(self, data, excelPath) -> None:
+        super().__init__(data, excelPath)
         self.df = self.prepare_data(data)
     
     def prepare_data(sef, data):
@@ -84,12 +84,18 @@ class Nutmeg(SvaBasics):
         )
 
         # write final csvs
-        striker.head(self.TABLE_SIZE).to_csv('./csv/tunnelkoenig.csv', index=False, sep=self.excel_delimiter)
-        victoms.head(self.TABLE_SIZE).to_csv('./csv/elbtunnel.csv', index=False, sep=self.excel_delimiter)
-        crosstab.to_csv('./csv/tunnler_kreuztabelle.csv',index_label="Verteiler", sep=self.excel_delimiter)
-        striker_weekday.to_csv('./csv/tunnelkoenig_wochentag_verteiler.csv', index_label="Verteiler", sep=self.excel_delimiter)
-        victom_weekday.to_csv('./csv/tunnelkoenig_wochetntag_opfer.csv', index_label="Opfer", sep=self.excel_delimiter)
+        # striker.head(self.TABLE_SIZE).to_csv('./csv/tunnelkoenig.csv', index=False, sep=self.excel_delimiter)
+        # victoms.head(self.TABLE_SIZE).to_csv('./csv/elbtunnel.csv', index=False, sep=self.excel_delimiter)
+        self.toExcelSheet(striker.head(self.TABLE_SIZE), 'Tunnelkönig')
+        self.toExcelSheet(victoms.head(self.TABLE_SIZE), 'Elbtunnel')
 
+        # special tables
+        self.toExcelSheet(crosstab.head(self.TABLE_SIZE), 'Kreuztabelle', True)
+        self.toExcelSheet(striker_weekday.head(self.TABLE_SIZE), 'Tunnelkönig Wochentage', True)
+        self.toExcelSheet(victom_weekday.head(self.TABLE_SIZE), 'Elbtunnel Wochentage', True)
+        # crosstab.to_csv('./csv/tunnler_kreuztabelle.csv',index_label="Verteiler", sep=self.excel_delimiter)
+        # striker_weekday.to_csv('./csv/tunnelkoenig_wochentag_verteiler.csv', index_label="Verteiler", sep=self.excel_delimiter)
+        # victom_weekday.to_csv('./csv/tunnelkoenig_wochetntag_opfer.csv', index_label="Opfer", sep=self.excel_delimiter)
         
         
 
