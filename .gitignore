@@ -5,6 +5,7 @@
 TEST*
 local*
 /plots*
+/excel
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
