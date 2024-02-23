@@ -49,8 +49,15 @@ class SvaBasics(SvaPlots):
         
         if index:
             max_col += 1
+        
+        # When A-Z
+        if max_col <= 24:
+            maxColString = chr(max_col+64)
+        else:
+            # When over Z
+            maxColString = 'A' + chr(64 + max_col%26)
 
-        ref = 'A1:{0}{1}'.format(chr(max_col+64), str(max_row+1))
+        ref = 'A1:{0}{1}'.format(maxColString, str(max_row +1))
         #print(ref)
         tab = Table(displayName=tableName, ref=ref)
 
