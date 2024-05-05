@@ -46,9 +46,37 @@ class Nutmeg(SvaBasics):
         # group data 
         striker = df.groupby(['striker.full_name'], as_index=False)['striker.full_name'].value_counts().sort_values('count', ascending=False)
         victoms = df.groupby(['victom.full_name'], as_index=False)['victom.full_name'].value_counts().sort_values('count', ascending=False)
-        crosstab = pd.crosstab(index=df['striker.full_name'],columns=df['victom.full_name'], margins=True, margins_name='Summe') # cross tabele
         striker_weekday = pd.crosstab(index=df['striker.full_name'],columns=df['weekday'], margins=True, margins_name='Summe')
         victom_weekday = pd.crosstab(index=df['victom.full_name'],columns=df['weekday'], margins=True, margins_name='Summe')
+        crosstab = pd.crosstab(index=df['striker.full_name'],columns=df['victom.full_name'], margins=True, margins_name='Summe') # cross tabele
+        
+        # Create a suqare matrix
+        i = crosstab.index.union(df.columns)
+        crosstabSquared = crosstab.reindex(index=i, columns=i, fill_value=0)
+
+        # Find nemesis
+        temp = crosstabSquared.add(crosstabSquared.transpose(copy=True)).drop('Summe')
+        # print(crosstab)
+        # print(temp)
+        nemesisMax = temp.max()
+        nemesisIndex = temp.idxmax()
+        nemesisStrikes = []
+        nemesisGotStriked = []
+
+        nemesis = pd.DataFrame({'Spieler': nemesisIndex.index, 'Nemesis': nemesisIndex.values, 'Treffer': nemesisMax.values})
+        
+        for i, row in nemesis.iterrows():
+            nemesisName = row['Nemesis']
+            playerName = row['Spieler']
+            nemesisStrikes.append(crosstabSquared.loc[playerName, nemesisName])
+            nemesisGotStriked.append(crosstabSquared.loc[nemesisName, playerName])
+        
+        nemesis['Verteilt'] = nemesisStrikes
+        nemesis['Bekommen'] = nemesisGotStriked
+        nemesis = nemesis.set_index('Spieler')   
+
+        
+        # print(nemesis)
         
         
         if team != None:
@@ -90,7 +118,10 @@ class Nutmeg(SvaBasics):
         self.toExcelSheet(victoms.head(self.TABLE_SIZE), 'Elbtunnel')
 
         # special tables
-        self.toExcelSheet(crosstab.head(self.TABLE_SIZE), 'Kreuztabelle', True)
+        self.toExcelSheet(crosstab, 'Kreuztabelle', True)
+        self.toExcelSheet(crosstabSquared.set_index('striker.full_name'), 'KreuztabelleQuad', True)
+        self.toExcelSheet(nemesis, 'Nemesis', True)
+        
         self.toExcelSheet(striker_weekday.head(self.TABLE_SIZE), 'Tunnelkönig Wochentage', True)
         self.toExcelSheet(victom_weekday.head(self.TABLE_SIZE), 'Elbtunnel Wochentage', True)
         # crosstab.to_csv('./csv/tunnler_kreuztabelle.csv',index_label="Verteiler", sep=self.excel_delimiter)
