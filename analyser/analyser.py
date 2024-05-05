@@ -53,7 +53,7 @@ class Analyser():
             self.sva_requ.get_token()
             
 
-    def get_current_season(self):
+    def set_current_season(self):
         resp = self.sva_requ.get_seasions()
 
         if resp.status_code == 200:
@@ -87,7 +87,7 @@ class Analyser():
         # Alayse by requested data 
         elif self.sva_requ.token:
 
-            self.get_current_season()
+            self.set_current_season()
 
             print('Get Team Data')
             resp = self.sva_requ.get_team()
