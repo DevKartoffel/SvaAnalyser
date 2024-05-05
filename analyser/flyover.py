@@ -19,13 +19,14 @@ class Flyover(SvaBasics):
         df = super().common_data_preparation(df)
         return df
     
-    def analyse(self, current_season, team=None):
+    def analyse(self, current_season=None, team=None):
         """
         data: dict or list[dict]
         """
         # Filter Data
-        season_id = current_season['id']
-        df = self.df.loc[self.df['season.id'] == season_id]
+        if current_season:
+            season_id = current_season['id']
+            df = self.df.loc[self.df['season.id'] == season_id]
 
         # Analys by groups
         grp = df.groupby(['striker.full_name'], as_index=False)
