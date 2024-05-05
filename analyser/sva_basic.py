@@ -74,11 +74,9 @@ class SvaBasics(SvaPlots):
         for column_cells in worksheet.columns:
             length = max(len(str(cell.value)) for cell in column_cells)
             worksheet.column_dimensions[column_cells[0].column_letter].width = length
-
-        # for idx, col in enumerate(worksheet.columns, 1):
-        #     worksheet.column_dimensions[get_column_letter(idx)].auto_size = True
-
-        # # Make the columns wider for clarity.
-        # worksheet.set_column(0, max_col - 1, 20)
-
+        
+        # Remove former columns (in case the table got smaller)
+        worksheet.delete_cols(max_col +1, (worksheet.max_column - max_col))
+        # Remove former rows (in case the table got smaller)
+        worksheet.delete_rows(max_row+2, worksheet.max_row - max_row)
         writer.save()
