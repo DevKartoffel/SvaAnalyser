@@ -51,13 +51,13 @@ class Nutmeg(SvaBasics):
         crosstab = pd.crosstab(index=df['striker.full_name'],columns=df['victom.full_name'], margins=True, margins_name='Summe') # cross tabele
         
         # Create a suqare matrix
-        i = crosstab.index.union(df.columns)
+        # i = crosstab.columns
+        i= sorted(set(df['striker.full_name']).union(set(df['victom.full_name'])).union(crosstab.index).union(crosstab.columns))
         crosstabSquared = crosstab.reindex(index=i, columns=i, fill_value=0)
 
         # Find nemesis
         temp = crosstabSquared.add(crosstabSquared.transpose(copy=True)).drop('Summe')
-        # print(crosstab)
-        # print(temp)
+        #print(crosstabSquared)
         nemesisMax = temp.max()
         nemesisIndex = temp.idxmax()
         nemesisStrikes = []
@@ -119,7 +119,7 @@ class Nutmeg(SvaBasics):
 
         # special tables
         self.toExcelSheet(crosstab, 'Kreuztabelle', True)
-        self.toExcelSheet(crosstabSquared.set_index('striker.full_name'), 'KreuztabelleQuad', True)
+        self.toExcelSheet(crosstabSquared, 'KreuztabelleQuad', True)
         self.toExcelSheet(nemesis, 'Nemesis', True)
         
         self.toExcelSheet(striker_weekday.head(self.TABLE_SIZE), 'Tunnelkönig Wochentage', True)
