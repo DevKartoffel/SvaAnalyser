@@ -1,4 +1,5 @@
 {
   "base_url": "https://devkartoffel.pythonanywhere.com/",
-  "excel_path": "excel\\statistik.xlsx"
+  "excel_path": "excel\\statistik.xlsx",
+  "excel_path_all_time": "excel\\statistik_all_time.xlsx"
 }

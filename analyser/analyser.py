@@ -25,6 +25,7 @@ class Analyser():
             data = json.load(f)
             base_url = data['base_url']
             self.excel_path = data['excel_path']
+            self.settings = data
 
         
         # Overw
@@ -54,7 +55,7 @@ class Analyser():
             
 
     def set_current_season(self):
-        resp = self.sva_requ.get_seasions()
+        resp = self.sva_requ.get_seasons()
 
         if resp.status_code == 200:
             seasons = resp.json()
@@ -66,12 +67,15 @@ class Analyser():
         # self.save_json_data()
         nutmegs = get_saved_data(self.local_nutmeg_data_dir)
         flyovers = get_saved_data(self.local_flyover_data_dir)
-        seasion = {'id':3}
+        season = {'id':3}
         self.flyovers = Flyover(flyovers, self.excel_path)
-        self.flyovers.analyse(seasion)
+        self.flyovers.analyse(season)
 
         self.nutmegs = Nutmeg(nutmegs, self.excel_path)
-        self.nutmegs.analyse(seasion)
+        self.nutmegs.analyse(season)
+        # Current All Time
+        self.nutmegs.excelPath = self.settings["excel_path_all_time"]
+        self.nutmegs.analyse()
 
         plots = self.nutmegs.get_plots() + self.flyovers.get_plots()
         self.nutmegs.subplot(plots, 'graphs')
@@ -93,41 +97,40 @@ class Analyser():
             resp = self.sva_requ.get_team()
             if resp.status_code == 200:
                 team = resp.json()
-                print('Analys flyover')
-                resp = self.sva_requ.get_fylovers('')
-                flyovers = resp.json()
-                if resp.status_code == 200:
-                    self.flyovers = Flyover(flyovers, self.excel_path)
-                    self.flyovers.analyse(self.current_season, team)
-                    # self.analyse_flyover(flyovers, team)
-
-                print('Analys nutmegs')
-                resp = self.sva_requ.get_nutmegs('')
-                if resp.status_code == 200:
-                    nutmegs = resp.json()
-                    self.nutmegs = Nutmeg(nutmegs, self.excel_path)
-                    self.nutmegs.analyse(self.current_season, team)
-                    # self.analyse_nutmeg(nutmegs, team)
-                
-                # Print graphs
-                plots = self.nutmegs.get_plots() + self.flyovers.get_plots()
-                self.nutmegs.subplot(plots, 'graphs')
             else:
-                print('Analys flyover')
-                resp = self.sva_requ.get_fylovers('')
-                flyovers = resp.json()
-                if resp.status_code == 200:
-                    self.flyovers = Flyover(flyovers, self.excel_path)
-                    self.flyovers.analyse(self.current_season)
-                    # self.analyse_flyover(flyovers, team)
+                team = None
+            
+            print('Analys flyover')
+            resp = self.sva_requ.get_fylovers('')
+            flyovers = resp.json()
+            if resp.status_code == 200:
+                print("Analyse current season flyover data.")
+                self.flyovers = Flyover(flyovers, self.excel_path)
+                self.flyovers.analyse(self.current_season, team)
 
-                print('Analys nutmegs')
-                resp = self.sva_requ.get_nutmegs('')
-                if resp.status_code == 200:
-                    nutmegs = resp.json()
-                    self.nutmegs = Nutmeg(nutmegs, self.excel_path)
-                    self.nutmegs.analyse(self.current_season)
-                    # self.analyse_nutmeg(nutmegs, team)
+                print("Analyse all time flyover data.")
+                self.flyovers.excelPath = self.settings["excel_path_all_time"]
+                self.flyovers.analyse()
+
+            print('Analys nutmegs')
+            resp = self.sva_requ.get_nutmegs('')
+            if resp.status_code == 200:
+                nutmegs = resp.json()
+                # Current Season
+                print("Analyse current season nutmeg data.")
+                self.nutmegs = Nutmeg(nutmegs, self.excel_path)
+                self.nutmegs.analyse(self.current_season, team)
+                # Current All Time
+                print("Analyse all time nutmeg data.")
+                self.nutmegs.excelPath = self.settings["excel_path_all_time"]
+                self.nutmegs.analyse(team=team)
+                # self.analyse_nutmeg(nutmegs, team)
+            
+            # Print graphs
+            print("Print plots")
+            plots = self.nutmegs.get_plots() + self.flyovers.get_plots()
+            self.nutmegs.subplot(plots, 'graphs')
+        
         else:
             print('Token is missing')
     

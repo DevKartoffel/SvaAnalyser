@@ -4,7 +4,7 @@ from openpyxl.worksheet.table import Table, TableStyleInfo
 from openpyxl.utils import get_column_letter
 
 class SvaBasics(SvaPlots):
-    TABLE_SIZE = 15
+    TABLE_SIZE = None
     NUM_PLAYERS_GRAPH = 5
 
 
@@ -24,13 +24,12 @@ class SvaBasics(SvaPlots):
         df['date'] = pd.to_datetime(df['date'])
         df['weekday'] = df['date'].dt.day_name(locale='de_DE.utf-8')
         df = df.sort_values('date').reset_index()
-        return df
+        return df.copy()
 
-    def set_season_df(self, currentSeason):
-        season_id = currentSeason['id']
-        self.seasonDf = self.df.loc[self.df['season.id'] == season_id]
+    def get_season_df(self, season):
+        season_id = season['id']
 
-        return self.seasonDf
+        return self.df.loc[self.df['season.id'] == season_id].copy()
     
     def toExcelSheet(self, df:pd.DataFrame, sheetName:str, index=False):
         writer = pd.ExcelWriter(self.excelPath, engine='openpyxl', mode='a', if_sheet_exists='overlay')

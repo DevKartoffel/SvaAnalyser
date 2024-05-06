@@ -61,7 +61,7 @@ class SvaRequests():
 
         return resp
 
-    def get_seasions(self):
+    def get_seasons(self):
         endpoint = 'sva/apis/seasons/'
         header = {
             'Authorization': 'Token ' + self.token

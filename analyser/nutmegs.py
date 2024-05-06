@@ -36,9 +36,9 @@ class Nutmeg(SvaBasics):
         """
         # Filter Data
         if current_season:
-            df = self.set_season_df(current_season)
+            df = self.get_season_df(current_season)
         else:
-            df = self.df
+            df = self.df.copy()
         
         # Write data to csv
         # df.to_csv('./csv/tunnler_all.csv')

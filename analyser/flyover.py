@@ -25,8 +25,10 @@ class Flyover(SvaBasics):
         """
         # Filter Data
         if current_season:
-            season_id = current_season['id']
-            df = self.df.loc[self.df['season.id'] == season_id]
+            df = self.get_season_df(current_season)
+        else:
+            df = self.df.copy()
+
 
         # Analys by groups
         grp = df.groupby(['striker.full_name'], as_index=False)
