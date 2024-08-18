@@ -2,6 +2,8 @@ from .sva_plots import SvaPlots
 import pandas as pd
 from openpyxl.worksheet.table import Table, TableStyleInfo
 from openpyxl.utils import get_column_letter
+import os
+import shutil
 
 class SvaBasics(SvaPlots):
     TABLE_SIZE = None
@@ -15,6 +17,9 @@ class SvaBasics(SvaPlots):
         self.seasonDf = None
         self.sheetData = {}
         self.excelPath = excelPath
+
+        if not os.path.isfile(excelPath):
+            shutil.copyfile('statistik_template.xlsx', self.excelPath)
 
     
     def common_data_preparation(sef, df:pd.DataFrame):
@@ -78,4 +83,5 @@ class SvaBasics(SvaPlots):
         worksheet.delete_cols(max_col +1, (worksheet.max_column - max_col))
         # Remove former rows (in case the table got smaller)
         worksheet.delete_rows(max_row+2, worksheet.max_row - max_row)
-        writer.save()
+        #writer.save()
+        writer.close()

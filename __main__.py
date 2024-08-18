@@ -1,11 +1,11 @@
-from analyser.analyser import Analyser
+from gui import WinowManager
 import os
 
 def main():
     print('start Analyser')
 
-    an = Analyser()
-    an.run()
+    WinowManager()
+
 
     print('end')
 

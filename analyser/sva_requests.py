@@ -34,8 +34,8 @@ class SvaRequests():
             print(err.args)
             
 
-    def get_fylovers(self, filter:str) -> requests.Response:
-        endpoint = 'sva/apis/flyovers/'
+    def get_fylovers(self, filter:str="") -> requests.Response:
+        endpoint = 'sva/apis/flyovers/'+filter
         header = {
             'Authorization': 'Token ' + self.token
         }
@@ -43,8 +43,8 @@ class SvaRequests():
 
         return resp
 
-    def get_nutmegs(self, filter:str) -> requests.Response:
-        endpoint = 'sva/apis/nutmegs/'
+    def get_nutmegs(self, filter:str="") -> requests.Response:
+        endpoint = 'sva/apis/nutmegs/' + filter
         header = {
             'Authorization': 'Token ' + self.token
         }
