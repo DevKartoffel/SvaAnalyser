@@ -21,7 +21,7 @@ class SvaRequests():
         }
 
         try:
-            resp = requests.post(url=url, data=data, timeout=10)
+            resp = requests.post(url=url, data=data, timeout=100)
 
             if resp.status_code == 200:
                 self.token = resp.json().get('token')
