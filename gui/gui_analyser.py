@@ -93,6 +93,7 @@ class GUI_Analyser(Analyser):
 
     def analyse_selection(self):
         self.logger.info('Starte Analyse')
-        self.currentData['flyover'].analyse(team=self.team)
-        self.currentData['nutmegs'].analyse(team=self.team)
+        team = self.team if self.selectedSeason == self.current_season else None
+        self.currentData['flyover'].analyse(team=team)
+        self.currentData['nutmegs'].analyse(team=team)
         self.logger.info('Analyse beendet. Schaue in Excel Liste und die Plots.')

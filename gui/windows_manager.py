@@ -101,9 +101,10 @@ class WinowManager():
         if self.dataDropdownValue.get() == None or self.dataDropdownValue.get() == '':
             self.dataDropdown.current(1)
         self.analyseButton.grid(column=4, row=0)
+        self.set_table_frame(None, None, None)
         
         
-    def set_table_frame(self, var, index, mode):
+    def set_table_frame(self, var:None, index:None, mode:None):
         selectedDataframeKey = self.analyser._df_options_swaped_()[self.dataDropdown.get()]
         df = self.analyser.currentData[selectedDataframeKey].df
         self.table = Table(self.dataArea, dataframe=df, showtoolbar=True, showstatusbar=True)
