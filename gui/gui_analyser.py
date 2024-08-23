@@ -67,24 +67,27 @@ class GUI_Analyser(Analyser):
     
 
     def download_data(self, seasonName):
+        filter = ''
         if seasonName != 'Alle':
             selectedSeason = self.set_selected_season(seasonName)
             filter = '?season=' + str(selectedSeason['id'])
-            
+        
+        filenameAddon = selectedSeason['name'].replace('/','-')  if filter != '' else 'Gesamt'
         resp = self.sva_requ.get_nutmegs(filter)
         if resp.status_code == 200:
-            nutmegs = resp.json()
-            excel_path = '{}Statistik_{}.xlsx'.format(self.settings['excel_path_folder'], selectedSeason['name'].replace('/','-') )
-            self.currentData['nutmegs'] = Nutmeg(nutmegs, excel_path)
+            data = resp.json()
+            
+            excel_path = '{}Statistik_{}.xlsx'.format(self.settings['excel_path_folder'], filenameAddon)
+            self.currentData['nutmegs'] = Nutmeg(data, excel_path)
             self.logger.info('Tunner geladen')
         else:
             self.logger.error('Konnte Tunner nicht laden')
         
         resp = self.sva_requ.get_fylovers(filter)
         if resp.status_code == 200:
-            nutmegs = resp.json()
-            excel_path = '{}Statistik_{}.xlsx'.format(self.settings['excel_path_folder'], selectedSeason['name'].replace('/','-') )
-            self.currentData['flyover'] = Flyover(nutmegs, excel_path)
+            data = resp.json()
+            excel_path = '{}Statistik_{}.xlsx'.format(self.settings['excel_path_folder'], filenameAddon)
+            self.currentData['flyover'] = Flyover(data, excel_path)
             self.logger.info('Zaunschüsse geladen')
         else:
             self.logger.error('Zaunschüsse nicht laden')
@@ -93,6 +96,15 @@ class GUI_Analyser(Analyser):
 
     def analyse_selection(self):
         self.logger.info('Starte Analyse')
-        self.currentData['flyover'].analyse(team=self.team)
-        self.currentData['nutmegs'].analyse(team=self.team)
+        team = self.team if self.selectedSeason == self.current_season else None
+        flyovers = self.currentData['flyover']
+        flyovers.analyse(team=team)
+        nutmegs = self.currentData['nutmegs']
+        nutmegs.analyse(team=team)
         self.logger.info('Analyse beendet. Schaue in Excel Liste und die Plots.')
+
+        # Print graphs
+        print("Print plots")
+        plots = nutmegs.get_plots() + flyovers.get_plots()
+        filenameAddon = self.selectedSeason['name'].replace('/','-')  if self.selectedSeason != None else 'Gesamt'
+        Nutmeg.subplot(plots, 'graphs_{}'.format(filenameAddon))

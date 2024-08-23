@@ -123,7 +123,7 @@ class Nutmeg(SvaBasics):
 
         # special tables
         self.toExcelSheet(crosstab, 'Kreuztabelle', True)
-        if crosstabSquared != None:
+        if crosstabSquared is not None and not crosstabSquared.empty:
             self.toExcelSheet(crosstabSquared, 'KreuztabelleQuad', True)
             self.toExcelSheet(nemesis, 'Nemesis', True)
         
