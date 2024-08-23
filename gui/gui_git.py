@@ -2,6 +2,8 @@ from tkinter import messagebox, ttk
 import tkinter as tk
 from git import Repo
 import re
+import subprocess
+import sys
 
 
 class GitGUI():
@@ -64,6 +66,9 @@ class GitGUI():
         return False
 
 
+    def install_packages(self):
+        resp = subprocess.run(["pip", "install", "-r", "requirements.txt"])
+        print(str(resp))
         
     
     def open_popup(self):
@@ -88,6 +93,7 @@ class GitGUI():
         self.__repo.git.restore('.')
         self.__repo.git.clean('-df')
         self.__repo.remotes.origin.pull()
+        self.install_packages()
         self._set_status_text_()
 
 
