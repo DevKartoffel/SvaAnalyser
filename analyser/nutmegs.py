@@ -52,28 +52,32 @@ class Nutmeg(SvaBasics):
         
         # Create a suqare matrix
         # i = crosstab.columns
-        i= sorted(set(df['striker.full_name']).union(set(df['victom.full_name'])).union(crosstab.index).union(crosstab.columns))
-        crosstabSquared = crosstab.reindex(index=i, columns=i, fill_value=0)
+        crosstabSquared = None
+        try: 
+            i= sorted(set(df['striker.full_name']).union(set(df['victom.full_name'])).union(crosstab.index).union(crosstab.columns))
+            crosstabSquared = crosstab.reindex(index=i, columns=i, fill_value=0)
 
-        # Find nemesis
-        temp = crosstabSquared.add(crosstabSquared.transpose(copy=True)).drop('Summe')
-        #print(crosstabSquared)
-        nemesisMax = temp.max()
-        nemesisIndex = temp.idxmax()
-        nemesisStrikes = []
-        nemesisGotStriked = []
+            # Find nemesis
+            temp = crosstabSquared.add(crosstabSquared.transpose(copy=True)).drop('Summe')
+            #print(crosstabSquared)
+            nemesisMax = temp.max()
+            nemesisIndex = temp.idxmax()
+            nemesisStrikes = []
+            nemesisGotStriked = []
 
-        nemesis = pd.DataFrame({'Spieler': nemesisIndex.index, 'Nemesis': nemesisIndex.values, 'Treffer': nemesisMax.values})
-        
-        for i, row in nemesis.iterrows():
-            nemesisName = row['Nemesis']
-            playerName = row['Spieler']
-            nemesisStrikes.append(crosstabSquared.loc[playerName, nemesisName])
-            nemesisGotStriked.append(crosstabSquared.loc[nemesisName, playerName])
-        
-        nemesis['Verteilt'] = nemesisStrikes
-        nemesis['Bekommen'] = nemesisGotStriked
-        nemesis = nemesis.set_index('Spieler')   
+            nemesis = pd.DataFrame({'Spieler': nemesisIndex.index, 'Nemesis': nemesisIndex.values, 'Treffer': nemesisMax.values})
+            
+            for i, row in nemesis.iterrows():
+                nemesisName = row['Nemesis']
+                playerName = row['Spieler']
+                nemesisStrikes.append(crosstabSquared.loc[playerName, nemesisName])
+                nemesisGotStriked.append(crosstabSquared.loc[nemesisName, playerName])
+            
+            nemesis['Verteilt'] = nemesisStrikes
+            nemesis['Bekommen'] = nemesisGotStriked
+            nemesis = nemesis.set_index('Spieler') 
+        except:
+            print('Konnte keine Kreuztabelle erstellen')
 
         
         # print(nemesis)
@@ -119,8 +123,9 @@ class Nutmeg(SvaBasics):
 
         # special tables
         self.toExcelSheet(crosstab, 'Kreuztabelle', True)
-        self.toExcelSheet(crosstabSquared, 'KreuztabelleQuad', True)
-        self.toExcelSheet(nemesis, 'Nemesis', True)
+        if crosstabSquared != None:
+            self.toExcelSheet(crosstabSquared, 'KreuztabelleQuad', True)
+            self.toExcelSheet(nemesis, 'Nemesis', True)
         
         self.toExcelSheet(striker_weekday.head(self.TABLE_SIZE), 'Tunnelkönig Wochentage', True)
         self.toExcelSheet(victom_weekday.head(self.TABLE_SIZE), 'Elbtunnel Wochentage', True)

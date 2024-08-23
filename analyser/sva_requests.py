@@ -21,7 +21,7 @@ class SvaRequests():
         }
 
         try:
-            resp = requests.post(url=url, data=data, timeout=10)
+            resp = requests.post(url=url, data=data, timeout=100)
 
             if resp.status_code == 200:
                 self.token = resp.json().get('token')
@@ -34,8 +34,8 @@ class SvaRequests():
             print(err.args)
             
 
-    def get_fylovers(self, filter:str) -> requests.Response:
-        endpoint = 'sva/apis/flyovers/'
+    def get_fylovers(self, filter:str="") -> requests.Response:
+        endpoint = 'sva/apis/flyovers/'+filter
         header = {
             'Authorization': 'Token ' + self.token
         }
@@ -43,8 +43,8 @@ class SvaRequests():
 
         return resp
 
-    def get_nutmegs(self, filter:str) -> requests.Response:
-        endpoint = 'sva/apis/nutmegs/'
+    def get_nutmegs(self, filter:str="") -> requests.Response:
+        endpoint = 'sva/apis/nutmegs/' + filter
         header = {
             'Authorization': 'Token ' + self.token
         }

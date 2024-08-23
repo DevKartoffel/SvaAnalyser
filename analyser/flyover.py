@@ -29,11 +29,31 @@ class Flyover(SvaBasics):
         else:
             df = self.df.copy()
 
+        
 
         # Analys by groups
         grp = df.groupby(['striker.full_name'], as_index=False)
         simple_data = grp['striker.full_name'].value_counts().sort_values(['count', 'striker.full_name'], ascending=[False, True])
         #simple_data.head(self.TABLE_SIZE).to_csv('./csv/zaunkoenig.csv', index=False, header=['Name', 'Zaunschüsse'], sep=self.excel_delimiter)
+
+        if team != None:
+            # TODO: Add is Player
+            dfTeam = pd.json_normalize(team)
+
+            # Delete inactive members
+            dfTeam = dfTeam.drop(dfTeam[~dfTeam['is_active']].index) # TODO: drop all !players
+
+            # create names
+            dfTeam['striker.full_name'] = dfTeam['name'] + ' ' + dfTeam['surename']
+            dfTeam['count'] = 0
+            # Drop rest
+            dfTeam = dfTeam.drop( columns=['name', 'is_active', 'surename'])
+
+            # Filter missin players
+            missing_strikers = dfTeam[~dfTeam['striker.full_name'].isin(simple_data['striker.full_name'])]
+
+            # Add missing players to data
+            simple_data = pd.concat([simple_data, missing_strikers], ignore_index=True).sort_values(['count', 'striker.full_name'], ascending=[False, True])
 
         
         # For plotting tale
