@@ -45,48 +45,54 @@ class WinowManager():
         
 
     def __init__(self):
+        # inititalise important stuff
         self.root = tk.Tk()
-        
         self.logger = self.Logger(self.root)
         self.root.minsize(width=800, height=400)
         self.root.title("SVA Analyser")
-        
         self.table = None
-        self.analyser = None
+        self.analyser = GUI_Analyser(self.logger)
+        
 
+        # Init tool bar
         self.topBar = tk.Frame(self.root, bd=2, height=84)
         self.topBar.pack(side='top', fill='x')
-        self.dataArea = tk.Frame(self.root)
-        self.dataArea.pack(side='top', fill='both', expand=1)
-
-        self.dropdown = ttk.Combobox(
+        self.seasonDropdown = ttk.Combobox(
             master= self.topBar,
             state="readonly",
             values=[]
         )
-        self.dropdown.grid(column=0, row=0)
+        self.seasonDropdown.grid(column=0, row=0)
+        button = ttk.Button(master=self.topBar, text="Lade Daten", command=self.load_data)
+        button.grid(column=1, row=0)
+        self.update_dropdown_data()
 
+
+
+        # init top bar
+        self.dataToolBar = tk.Frame(self.root, bd=2, height=84)
+        self.dataToolBar.pack(side='top', fill='x')
         self.dataDropdownValue = tk.StringVar()
         self.dataDropdownValue.trace_add('write', self.set_table_frame)
         self.dataDropdown = ttk.Combobox(
-            master= self.topBar,
+            master= self.dataToolBar,
             state="readonly",
             values=list(GUI_Analyser.DF_OPTIONS.values()),
             textvariable=self.dataDropdownValue
         )
-        
-        self.create_analyser()
+        self.analyseButton = ttk.Button(master=self.dataToolBar, text="Analysiere geladene Daten", command=self.start_analyser)
 
-        button = ttk.Button(master=self.topBar, text="Lade Daten", command=self.load_data)
-        button.grid(column=1, row=0)
-        
-        self.analyseButton = ttk.Button(master=self.topBar, text="Analysiere geladene Daten", command=self.start_analyser)
 
+        # Init Data area
+        self.dataArea = tk.Frame(self.root)
+        self.dataArea.pack(side='top', fill='both', expand=1)
+       
         self.root.mainloop()
+        
     
     def load_data(self):
-        self.logger.info('Suchen Date für ' + self.dropdown.get())
-        self.analyser.download_data(self.dropdown.get())
+        self.logger.info('Suchen Date für ' + self.seasonDropdown.get())
+        self.analyser.download_data(self.seasonDropdown.get())
         self.dataDropdown.grid(column=3, row=0)
         if self.dataDropdownValue.get() == None or self.dataDropdownValue.get() == '':
             self.dataDropdown.current(1)
@@ -104,14 +110,14 @@ class WinowManager():
         self.analyser.analyse_selection()
 
     
-    def create_analyser(self):
-        self.analyser = GUI_Analyser(self.logger)
+    def update_dropdown_data(self):
         seasons = self.analyser.get_seasons()
         seasonsReversed = seasons[::-1]
         seasonsReversed.append('Alle')
-        
-        self.dropdown['values'] = seasonsReversed
-        self.dropdown.current(0)
+        self.seasonDropdown['values'] = seasonsReversed
+        self.seasonDropdown.current(0)
+    
+
 
 
 if __name__ == "__main__":
