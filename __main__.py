@@ -1,4 +1,4 @@
-from gui import WinowManager
+from gui.windows_manager import WinowManager
 import os
 
 def main():
