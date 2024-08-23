@@ -1,4 +1,5 @@
 from .gui_analyser import GUI_Analyser
+from .gui_git import GitGUI
 from pandastable import Table, TableModel
 from tkinter import messagebox, ttk
 import tkinter as tk
@@ -51,8 +52,7 @@ class WinowManager():
         self.root.minsize(width=800, height=400)
         self.root.title("SVA Analyser")
         self.table = None
-        self.analyser = GUI_Analyser(self.logger)
-        
+        self.analyser = GUI_Analyser(self.logger)       
 
         # Init tool bar
         self.topBar = tk.Frame(self.root, bd=2, height=84)
@@ -65,6 +65,9 @@ class WinowManager():
         self.seasonDropdown.grid(column=0, row=0)
         button = ttk.Button(master=self.topBar, text="Lade Daten", command=self.load_data)
         button.grid(column=1, row=0)
+        updateButton = ttk.Button(master=self.topBar, text='(?|?) Updates')
+        updateButton.grid(column=2, row=0)
+        self.gitGui = GitGUI(updateButton)
         self.update_dropdown_data()
 
 
@@ -88,7 +91,7 @@ class WinowManager():
         self.dataArea.pack(side='top', fill='both', expand=1)
        
         self.root.mainloop()
-        
+    
     
     def load_data(self):
         self.logger.info('Suchen Date für ' + self.seasonDropdown.get())
