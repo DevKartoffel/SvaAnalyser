@@ -67,14 +67,17 @@ class GUI_Analyser(Analyser):
     
 
     def download_data(self, seasonName):
+        filter = ''
         if seasonName != 'Alle':
             selectedSeason = self.set_selected_season(seasonName)
             filter = '?season=' + str(selectedSeason['id'])
-            
+        
+        filenameAddon = selectedSeason['name'].replace('/','-')  if filter != '' else 'Gesamt'
         resp = self.sva_requ.get_nutmegs(filter)
         if resp.status_code == 200:
             data = resp.json()
-            excel_path = '{}Statistik_{}.xlsx'.format(self.settings['excel_path_folder'], selectedSeason['name'].replace('/','-') )
+            
+            excel_path = '{}Statistik_{}.xlsx'.format(self.settings['excel_path_folder'], filenameAddon)
             self.currentData['nutmegs'] = Nutmeg(data, excel_path)
             self.logger.info('Tunner geladen')
         else:
@@ -83,7 +86,7 @@ class GUI_Analyser(Analyser):
         resp = self.sva_requ.get_fylovers(filter)
         if resp.status_code == 200:
             data = resp.json()
-            excel_path = '{}Statistik_{}.xlsx'.format(self.settings['excel_path_folder'], selectedSeason['name'].replace('/','-') )
+            excel_path = '{}Statistik_{}.xlsx'.format(self.settings['excel_path_folder'], filenameAddon)
             self.currentData['flyover'] = Flyover(data, excel_path)
             self.logger.info('Zaunschüsse geladen')
         else:
@@ -103,4 +106,5 @@ class GUI_Analyser(Analyser):
         # Print graphs
         print("Print plots")
         plots = nutmegs.get_plots() + flyovers.get_plots()
-        Nutmeg.subplot(plots, 'graphs_{}'.format(self.selectedSeason['name'].replace('/','-') ))
+        filenameAddon = self.selectedSeason['name'].replace('/','-')  if self.selectedSeason != None else 'Gesamt'
+        Nutmeg.subplot(plots, 'graphs_{}'.format(filenameAddon))
