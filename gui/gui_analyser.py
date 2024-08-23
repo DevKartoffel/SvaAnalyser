@@ -73,18 +73,18 @@ class GUI_Analyser(Analyser):
             
         resp = self.sva_requ.get_nutmegs(filter)
         if resp.status_code == 200:
-            nutmegs = resp.json()
+            data = resp.json()
             excel_path = '{}Statistik_{}.xlsx'.format(self.settings['excel_path_folder'], selectedSeason['name'].replace('/','-') )
-            self.currentData['nutmegs'] = Nutmeg(nutmegs, excel_path)
+            self.currentData['nutmegs'] = Nutmeg(data, excel_path)
             self.logger.info('Tunner geladen')
         else:
             self.logger.error('Konnte Tunner nicht laden')
         
         resp = self.sva_requ.get_fylovers(filter)
         if resp.status_code == 200:
-            nutmegs = resp.json()
+            data = resp.json()
             excel_path = '{}Statistik_{}.xlsx'.format(self.settings['excel_path_folder'], selectedSeason['name'].replace('/','-') )
-            self.currentData['flyover'] = Flyover(nutmegs, excel_path)
+            self.currentData['flyover'] = Flyover(data, excel_path)
             self.logger.info('Zaunschüsse geladen')
         else:
             self.logger.error('Zaunschüsse nicht laden')
