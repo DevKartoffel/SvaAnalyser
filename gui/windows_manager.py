@@ -50,6 +50,7 @@ class WinowManager():
         self.root = tk.Tk()
         self.logger = self.Logger(self.root)
         self.root.minsize(width=800, height=400)
+        self.root.iconphoto(True, tk.PhotoImage(file='assets/logo.png'))
         self.root.title("SVA Analyser")
         self.table = None
         self.analyser = GUI_Analyser(self.logger)       
