@@ -122,10 +122,13 @@ class Nutmeg(SvaBasics):
         self.toExcelSheet(victoms.head(self.TABLE_SIZE), 'Elbtunnel')
 
         # special tables
-        self.toExcelSheet(crosstab, 'Kreuztabelle', True)
-        if crosstabSquared is not None and not crosstabSquared.empty:
-            self.toExcelSheet(crosstabSquared, 'KreuztabelleQuad', True)
-            self.toExcelSheet(nemesis, 'Nemesis', True)
+        try:
+            self.toExcelSheet(crosstab, 'Kreuztabelle', True)
+            if crosstabSquared is not None and not crosstabSquared.empty:
+                self.toExcelSheet(crosstabSquared, 'KreuztabelleQuad', True)
+                self.toExcelSheet(nemesis, 'Nemesis', True)
+        except:
+            print('Error in Kreuztabelle')
         
         self.toExcelSheet(striker_weekday.head(self.TABLE_SIZE), 'Tunnelkönig Wochentage', True)
         self.toExcelSheet(victom_weekday.head(self.TABLE_SIZE), 'Elbtunnel Wochentage', True)
