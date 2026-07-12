@@ -9,6 +9,6 @@ if EXIST venv\ (
 )
 CALL .\venv\Scripts\activate.bat
 mkdir -p excel
-python __main__.py
+python __main__.py &
 
 pause
