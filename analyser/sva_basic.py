@@ -27,7 +27,7 @@ class SvaBasics(SvaPlots):
             data: DataFrame
         """
         df['date'] = pd.to_datetime(df['date'])
-        df['weekday'] = df['date'].dt.day_name(locale='de_DE.utf-8')
+        df['weekday'] = df['date'].dt.day_name(locale='German_Germany')
         df = df.sort_values('date').reset_index()
         return df.copy()
 

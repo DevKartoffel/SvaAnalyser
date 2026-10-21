@@ -15,7 +15,7 @@ class Analyser():
     excel_delimiter = ';'
     
     def __init__(self) -> None:
-        locale.setlocale(locale.LC_ALL, 'de_DE.UTF8')
+        locale.setlocale(locale.LC_ALL, '')
 
         # Initialize test
         self.test = False
