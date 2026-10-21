@@ -1,8 +1,7 @@
-from lib2to3.pgen2 import token
-from msilib.schema import Error
 from typing import Any
 import requests
 import os
+import token
 
 class SvaRequests():
 
@@ -26,6 +25,8 @@ class SvaRequests():
             if resp.status_code == 200:
                 self.token = resp.json().get('token')
                 os.putenv("TOKEN", self.token)
+                if self.token == None:
+                    raise Exception("Unable to get token. Check credentials in .env file: " + str(resp))
                 
                 return resp
             
